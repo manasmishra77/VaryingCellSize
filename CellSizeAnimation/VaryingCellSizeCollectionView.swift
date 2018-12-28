@@ -17,8 +17,9 @@ protocol VaryingCellSizeCollectionViewDelgate {
 
 class VaryingCellSizeCollectionView: UICollectionView {
     var wrapperScrollView: UIScrollView!
-    var collViewDelegate: VaryingCellSizeCollectionViewDelgate!
+    var collViewDelegate: VaryingCellSizeCollectionViewDelgate?
     var screenMiddlePoint = UIScreen.main.bounds.width/2 // Used for scaleing
+    var cellWidth: CGFloat = 0.0
 
     func initialSetUp(delegate: VaryingCellSizeCollectionViewDelgate) {
         let cellNib = UINib.init(nibName: "VariableSizeCollectionViewCell", bundle: nil)
@@ -26,32 +27,38 @@ class VaryingCellSizeCollectionView: UICollectionView {
         self.isScrollEnabled = false
         self.delegate = self
         self.dataSource = self
+        self.collViewDelegate = delegate
         self.reloadData()
         self.layoutIfNeeded()
         
         //ADD ScrollView
         wrapperScrollView = UIScrollView(frame: self.bounds)
         self.addSubview(wrapperScrollView)
-        //let contentHeight = wrapperScrollView.frame.height
-        //let contentWidth: CGFloat =
-        wrapperScrollView.contentSize = contentSize
+        let contentHeight = wrapperScrollView.frame.height
+        let contentWidth: CGFloat = cellWidth*CGFloat((self.numberOfItems(inSection: 0)))
+        wrapperScrollView.contentSize = CGSize(width: contentWidth, height: contentHeight)
         wrapperScrollView.delegate = self
     }
 }
 extension VaryingCellSizeCollectionView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return collViewDelegate.numberOfItemFor(collectionView: self)
+        return collViewDelegate?.numberOfItemFor(collectionView: self) ?? 0
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "VariableCell", for: indexPath) as? VariableSizeCollectionViewCell else {
             return UICollectionViewCell()
         }
-        cell.sizeVaryingView.addSubview(collViewDelegate.cellForIndex(self, index: indexPath.row))
+        if let mainView = collViewDelegate?.cellForIndex(self, index: indexPath.row) {
+            cell.sizeVaryingView.addSubview(mainView)
+        }
+        
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return collViewDelegate.itemSizeForIndex(self, index: indexPath.row)
+        let cellSize = collViewDelegate?.itemSizeForIndex(self, index: indexPath.row) ?? CGSize.zero
+        cellWidth = cellSize.width
+        return cellSize
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
