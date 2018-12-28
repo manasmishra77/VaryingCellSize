@@ -14,6 +14,9 @@
 		B6CEC98621D540520075BC8B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B6CEC98421D540520075BC8B /* LaunchScreen.storyboard */; };
 		B6CEC99121D540520075BC8B /* CellSizeAnimationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CEC99021D540520075BC8B /* CellSizeAnimationTests.swift */; };
 		B6CEC99C21D540520075BC8B /* CellSizeAnimationUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CEC99B21D540520075BC8B /* CellSizeAnimationUITests.swift */; };
+		B6CEC9AB21D540950075BC8B /* VariableSizeCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CEC9A921D540950075BC8B /* VariableSizeCollectionViewCell.swift */; };
+		B6CEC9AC21D540950075BC8B /* VariableSizeCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6CEC9AA21D540950075BC8B /* VariableSizeCollectionViewCell.xib */; };
+		B6CEC9AE21D5D7380075BC8B /* VaryingCellSizeCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6CEC9AD21D5D7380075BC8B /* VaryingCellSizeCollectionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +50,9 @@
 		B6CEC99721D540520075BC8B /* CellSizeAnimationUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CellSizeAnimationUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B6CEC99B21D540520075BC8B /* CellSizeAnimationUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellSizeAnimationUITests.swift; sourceTree = "<group>"; };
 		B6CEC99D21D540520075BC8B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B6CEC9A921D540950075BC8B /* VariableSizeCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VariableSizeCollectionViewCell.swift; sourceTree = "<group>"; };
+		B6CEC9AA21D540950075BC8B /* VariableSizeCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VariableSizeCollectionViewCell.xib; sourceTree = "<group>"; };
+		B6CEC9AD21D5D7380075BC8B /* VaryingCellSizeCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VaryingCellSizeCollectionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +105,9 @@
 			children = (
 				B6CEC97B21D5404F0075BC8B /* AppDelegate.swift */,
 				B6CEC97D21D5404F0075BC8B /* ViewController.swift */,
+				B6CEC9AD21D5D7380075BC8B /* VaryingCellSizeCollectionView.swift */,
+				B6CEC9A921D540950075BC8B /* VariableSizeCollectionViewCell.swift */,
+				B6CEC9AA21D540950075BC8B /* VariableSizeCollectionViewCell.xib */,
 				B6CEC97F21D5404F0075BC8B /* Main.storyboard */,
 				B6CEC98221D540520075BC8B /* Assets.xcassets */,
 				B6CEC98421D540520075BC8B /* LaunchScreen.storyboard */,
@@ -232,6 +241,7 @@
 				B6CEC98621D540520075BC8B /* LaunchScreen.storyboard in Resources */,
 				B6CEC98321D540520075BC8B /* Assets.xcassets in Resources */,
 				B6CEC98121D5404F0075BC8B /* Main.storyboard in Resources */,
+				B6CEC9AC21D540950075BC8B /* VariableSizeCollectionViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,8 +266,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6CEC9AE21D5D7380075BC8B /* VaryingCellSizeCollectionView.swift in Sources */,
 				B6CEC97E21D5404F0075BC8B /* ViewController.swift in Sources */,
 				B6CEC97C21D5404F0075BC8B /* AppDelegate.swift in Sources */,
+				B6CEC9AB21D540950075BC8B /* VariableSizeCollectionViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
