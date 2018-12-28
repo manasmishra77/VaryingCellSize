@@ -10,6 +10,8 @@ import UIKit
 
 class ViewController: UIViewController {
     @IBOutlet weak var collectionView: VaryingCellSizeCollectionView!
+     var screenMiddlePoint = UIScreen.main.bounds.width/2
+    var wrapperScrollView: UIScrollView!
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
@@ -23,12 +25,16 @@ extension ViewController: VaryingCellSizeCollectionViewDelgate {
     }
     
     func cellForIndex(_ collectionView: VaryingCellSizeCollectionView, index: Int) -> UIView {
-        return UIView()
+        let newView = UIView()
+        newView.backgroundColor = .red
+        return newView
     }
     
     func itemSizeForIndex(_ collectionView: VaryingCellSizeCollectionView, index: Int) -> CGSize {
-        return CGSize(width: 160, height: 160)
+        let width = UIScreen.main.bounds.width/3
+        return CGSize(width: width, height: 160)
     }
 }
+
  
 
