@@ -12,6 +12,7 @@ protocol VaryingCellSizeCollectionViewDelgate {
     func numberOfItemFor(collectionView: VaryingCellSizeCollectionView) -> Int
     func cellForIndex(_ collectionView: VaryingCellSizeCollectionView, index: Int) -> UIView
     func itemSizeForIndex(_ collectionView: VaryingCellSizeCollectionView,  index: Int) -> CGSize
+    func selectedItemIndex(_ index: Int)
 }
 
 
@@ -52,12 +53,11 @@ extension VaryingCellSizeCollectionView: UICollectionViewDelegate, UICollectionV
         let mainView = collViewDelegate.cellForIndex(self, index: indexPath.row)
         mainView.frame = cell.sizeVaryingView.bounds
         cell.sizeVaryingView.addSubview(mainView)
-        
         mainView.translatesAutoresizingMaskIntoConstraints = false
-        mainView.topAnchor.constraint(equalTo: mainView.superview!.topAnchor).isActive = true
-        mainView.bottomAnchor.constraint(equalTo: mainView.superview!.bottomAnchor).isActive = true
-        mainView.leadingAnchor.constraint(equalTo: mainView.superview!.leadingAnchor, constant: 0).isActive = true
-        mainView.trailingAnchor.constraint(equalTo: mainView.superview!.trailingAnchor, constant: 0).isActive = true
+        mainView.topAnchor.constraint(equalTo: cell.sizeVaryingView.topAnchor).isActive = true
+        mainView.bottomAnchor.constraint(equalTo: cell.sizeVaryingView.bottomAnchor).isActive = true
+        mainView.leadingAnchor.constraint(equalTo: cell.sizeVaryingView.leadingAnchor, constant: 0).isActive = true
+        mainView.trailingAnchor.constraint(equalTo: cell.sizeVaryingView.trailingAnchor, constant: 0).isActive = true
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
@@ -67,6 +67,9 @@ extension VaryingCellSizeCollectionView: UICollectionViewDelegate, UICollectionV
         let cellSize = collViewDelegate.itemSizeForIndex(self, index: indexPath.row)
         cellWidth = cellSize.width
         return cellSize
+    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collViewDelegate.selectedItemIndex(indexPath.row)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
