@@ -8,6 +8,18 @@
 
 import UIKit
 
+struct VaryingCellCVContants {
+    static var screenMiddlePoint: CGFloat {
+        return UIScreen.main.bounds.width/2 + screenMiddlePointPatch
+    }  // Used for scaling
+    
+    //Patch Constants
+    static let screenMiddlePointPatch: CGFloat = -68
+    static let wapperScrollViewContentWidthPatch: CGFloat = 80
+    
+    static let minimumScaleValue: CGFloat = 0.7
+}
+
 protocol VaryingCellSizeCollectionViewDelgate {
     func numberOfItemFor(collectionView: VaryingCellSizeCollectionView) -> Int
     func cellForIndex(_ collectionView: VaryingCellSizeCollectionView, index: Int) -> UIView
@@ -19,13 +31,19 @@ protocol VaryingCellSizeCollectionViewDelgate {
 class VaryingCellSizeCollectionView: UICollectionView {
     var wrapperScrollView: UIScrollView!
     var collViewDelegate: VaryingCellSizeCollectionViewDelgate!
-    var screenMiddlePoint = UIScreen.main.bounds.width/2 // Used for scaleing
+    
     var cellWidth: CGFloat = 0.0
+    
+   
+    
 
     func initialSetUp(delegate: VaryingCellSizeCollectionViewDelgate) {
         let cellNib = UINib.init(nibName: "VariableSizeCollectionViewCell", bundle: nil)
         self.register(cellNib, forCellWithReuseIdentifier: "VariableCell")
         self.isScrollEnabled = false
+        if let flowLayout = self.collectionViewLayout as? UICollectionViewFlowLayout {
+            flowLayout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+        }
         self.delegate = self
         self.dataSource = self
         self.collViewDelegate = delegate
@@ -33,10 +51,11 @@ class VaryingCellSizeCollectionView: UICollectionView {
         self.layoutIfNeeded()
         
         //ADD ScrollView
-        wrapperScrollView = UIScrollView(frame: self.frame)
+        let wrapperScrollViewFrame = CGRect(x: 0, y: self.frame.origin.y, width: self.frame.width, height: self.frame.height)
+        wrapperScrollView = UIScrollView(frame: wrapperScrollViewFrame)
         self.superview?.addSubview(wrapperScrollView)
         let contentHeight = wrapperScrollView.frame.height
-        let contentWidth: CGFloat = cellWidth*CGFloat((self.numberOfItems(inSection: 0)))
+        let contentWidth: CGFloat = cellWidth*CGFloat((self.numberOfItems(inSection: 0))) + VaryingCellCVContants.wapperScrollViewContentWidthPatch
         wrapperScrollView.contentSize = CGSize(width: contentWidth, height: contentHeight)
         wrapperScrollView.delegate = self
     }
@@ -72,6 +91,7 @@ extension VaryingCellSizeCollectionView: UICollectionViewDelegate, UICollectionV
         collViewDelegate.selectedItemIndex(indexPath.row)
     }
     
+    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         self.contentOffset = scrollView.contentOffset
         for cell in self.visibleCells {
@@ -85,8 +105,11 @@ extension VaryingCellSizeCollectionView: UICollectionViewDelegate, UICollectionV
     
     //Used for stopping scrolview at specific position
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        self.contentOffset = getFinalOffsetOfScrollView(currentOffset: targetContentOffset.pointee)
-        scrollView.contentOffset = getFinalOffsetOfScrollView(currentOffset: targetContentOffset.pointee)
+       // self.contentOffset = getFinalOffsetOfScrollView(currentOffset: targetContentOffset.pointee)
+        //scrollView.contentOffset = getFinalOffsetOfScrollView(currentOffset: targetContentOffset.pointee)
+    }
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        print()
     }
 }
 
@@ -95,17 +118,17 @@ extension VaryingCellSizeCollectionView {
     func getScale(offSet: CGFloat, cellX: CGFloat) -> CGFloat {
         let actualX = cellX - offSet
         var scale: CGFloat = 0
-        if actualX > (screenMiddlePoint) {
-            scale = (1 - ((actualX - screenMiddlePoint)/screenMiddlePoint))
-        } else {
-            scale = actualX / screenMiddlePoint
+        let mP = VaryingCellCVContants.screenMiddlePoint
+        if (actualX > mP), (actualX < UIScreen.main.bounds.width) {
+            scale = (1 - ((actualX - mP)/mP))
+        } else if (actualX > 0) {
+            scale = actualX / mP
         }
         scale = (scale < 0) ? -scale : scale
         //print("Scale: \(scale)")
         
-        //Used if only to constarint cell size
-        if scale < 0.7 {
-            return 0.7
+        if scale < VaryingCellCVContants.minimumScaleValue {
+            return VaryingCellCVContants.minimumScaleValue
         }
         return scale
     }
@@ -125,6 +148,5 @@ extension VaryingCellSizeCollectionView {
             newOffSet.x = CGFloat(requiredOffSetX)
             return newOffSet
         }
-        
     }
 }

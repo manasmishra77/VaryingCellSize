@@ -23,7 +23,8 @@ extension ViewController: VaryingCellSizeCollectionViewDelgate {
     }
     
     func cellForIndex(_ collectionView: VaryingCellSizeCollectionView, index: Int) -> UIView {
-        let newView = UIView()
+        let newView = UILabel(frame: CGRect.zero)
+        newView.text = "\(index)"
         newView.backgroundColor = .red
         return newView
     }
