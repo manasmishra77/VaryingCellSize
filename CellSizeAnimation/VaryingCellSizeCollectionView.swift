@@ -35,8 +35,6 @@ class VaryingCellSizeCollectionView: UICollectionView {
     fileprivate var scrollingDirection: ScrollingDirection?
     fileprivate let affineIdentity = CGAffineTransform.identity
 
-    
-
     func initialSetUp(delegate: VaryingCellSizeCollectionViewDelgate) {
         let cellNib = UINib.init(nibName: "VariableSizeCollectionViewCell", bundle: nil)
         self.register(cellNib, forCellWithReuseIdentifier: "VariableCell")
@@ -44,6 +42,7 @@ class VaryingCellSizeCollectionView: UICollectionView {
         if let flowLayout = self.collectionViewLayout as? UICollectionViewFlowLayout {
             flowLayout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         }
+        
         self.delegate = self
         self.dataSource = self
         self.collViewDelegate = delegate
@@ -105,21 +104,15 @@ extension VaryingCellSizeCollectionView: UICollectionViewDelegate, UICollectionV
     
     //Used for stopping scrolview at specific position
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        scrollingDirection = (velocity.x>0) ? .right : .left
-        // self.contentOffset = getFinalOffsetOfScrollView(currentOffset: targetContentOffset.pointee)
-        //scrollView.contentOffset =  targetContentOffset.pointee
-        //self.contentOffset = targetContentOffset.pointee
+        scrollingDirection = (velocity.x>0) ? .left : .right
     }
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        
+        if !decelerate {
+            adjustContentOffSetFor3Views(scrollView)
+        }
     }
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-        
-    }
-    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
-//        self.contentOffset = getFinalOffsetOfScrollView(currentOffset: scrollView.contentOffset)
-//        scrollView.contentOffset = getFinalOffsetOfScrollView(currentOffset: scrollView.contentOffset)
-//        scrollingDirection = nil
+        adjustContentOffSetFor3Views(scrollView)
     }
 }
 
@@ -159,6 +152,11 @@ extension VaryingCellSizeCollectionView {
             newOffSet.x = CGFloat(requiredOffSetX)
             return newOffSet
         }
+    }
+    func adjustContentOffSetFor3Views(_ scrollView: UIScrollView) {
+        self.contentOffset = getFinalOffsetOfScrollView(currentOffset: scrollView.contentOffset)
+        scrollView.contentOffset = getFinalOffsetOfScrollView(currentOffset: scrollView.contentOffset)
+        scrollingDirection = nil
     }
     enum ScrollingDirection {
         case left
