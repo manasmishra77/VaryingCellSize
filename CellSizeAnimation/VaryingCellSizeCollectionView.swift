@@ -29,12 +29,12 @@ protocol VaryingCellSizeCollectionViewDelgate {
 
 
 class VaryingCellSizeCollectionView: UICollectionView {
-    var wrapperScrollView: UIScrollView!
-    var collViewDelegate: VaryingCellSizeCollectionViewDelgate!
-    
-    var cellWidth: CGFloat = 0.0
-    
-   
+    fileprivate var wrapperScrollView: UIScrollView!
+    fileprivate var collViewDelegate: VaryingCellSizeCollectionViewDelgate!
+    fileprivate var cellWidth: CGFloat = 0.0
+    fileprivate var scrollingDirection: ScrollingDirection?
+    fileprivate let affineIdentity = CGAffineTransform.identity
+
     
 
     func initialSetUp(delegate: VaryingCellSizeCollectionViewDelgate) {
@@ -50,7 +50,7 @@ class VaryingCellSizeCollectionView: UICollectionView {
         self.reloadData()
         self.layoutIfNeeded()
         
-        //ADD ScrollView
+        //Add ScrollView
         let wrapperScrollViewFrame = CGRect(x: 0, y: self.frame.origin.y, width: self.frame.width, height: self.frame.height)
         wrapperScrollView = UIScrollView(frame: wrapperScrollViewFrame)
         self.superview?.addSubview(wrapperScrollView)
@@ -97,19 +97,29 @@ extension VaryingCellSizeCollectionView: UICollectionViewDelegate, UICollectionV
         for cell in self.visibleCells {
             if let cell = cell as? VariableSizeCollectionViewCell {
                 let scale = getScale(offSet: scrollView.contentOffset.x, cellX: cell.frame.origin.x)
-                let affineIdentity = CGAffineTransform.identity
                 cell.sizeVaryingView.transform = affineIdentity.scaledBy(x: scale, y: scale)
+                cell.sizeVaryingView.alpha = scale
             }
         }
     }
     
     //Used for stopping scrolview at specific position
     func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-       // self.contentOffset = getFinalOffsetOfScrollView(currentOffset: targetContentOffset.pointee)
-        //scrollView.contentOffset = getFinalOffsetOfScrollView(currentOffset: targetContentOffset.pointee)
+        scrollingDirection = (velocity.x>0) ? .right : .left
+        // self.contentOffset = getFinalOffsetOfScrollView(currentOffset: targetContentOffset.pointee)
+        //scrollView.contentOffset =  targetContentOffset.pointee
+        //self.contentOffset = targetContentOffset.pointee
     }
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
-        print()
+        
+    }
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+        
+    }
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+//        self.contentOffset = getFinalOffsetOfScrollView(currentOffset: scrollView.contentOffset)
+//        scrollView.contentOffset = getFinalOffsetOfScrollView(currentOffset: scrollView.contentOffset)
+//        scrollingDirection = nil
     }
 }
 
@@ -139,7 +149,8 @@ extension VaryingCellSizeCollectionView {
 extension VaryingCellSizeCollectionView {
     func getFinalOffsetOfScrollView(currentOffset: CGPoint) -> CGPoint {
         let mod = Int(currentOffset.x)%Int(cellWidth)
-        let multiplier = Int(currentOffset.x)/Int(cellWidth)
+        let multiplierAddition = (scrollingDirection == .left) ? -1: 1
+        let multiplier = (mod > Int(cellWidth/2)) ? (Int(currentOffset.x)/Int(cellWidth)) + multiplierAddition: (Int(currentOffset.x)/Int(cellWidth))
         let requiredOffSetX = Int(cellWidth)*multiplier
         if mod == 0 {
             return currentOffset
@@ -148,5 +159,9 @@ extension VaryingCellSizeCollectionView {
             newOffSet.x = CGFloat(requiredOffSetX)
             return newOffSet
         }
+    }
+    enum ScrollingDirection {
+        case left
+        case right
     }
 }
