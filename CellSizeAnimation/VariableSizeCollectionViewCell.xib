@@ -20,16 +20,17 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wm1-N6-9GU">
-                        <rect key="frame" x="0.0" y="0.0" width="102" height="113"/>
+                        <rect key="frame" x="1" y="0.0" width="100" height="113"/>
                         <color key="backgroundColor" red="0.85210476030000004" green="1" blue="0.5462108873" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                 </subviews>
             </view>
+            <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
-                <constraint firstItem="wm1-N6-9GU" firstAttribute="trailing" secondItem="ZTg-uK-7eu" secondAttribute="trailing" id="3fT-zr-5dp"/>
                 <constraint firstItem="ZTg-uK-7eu" firstAttribute="top" secondItem="wm1-N6-9GU" secondAttribute="top" id="Fue-qm-rav"/>
                 <constraint firstItem="wm1-N6-9GU" firstAttribute="bottom" secondItem="ZTg-uK-7eu" secondAttribute="bottom" id="KTv-qv-9mk"/>
-                <constraint firstItem="ZTg-uK-7eu" firstAttribute="leading" secondItem="wm1-N6-9GU" secondAttribute="leading" id="plT-Ds-tkc"/>
+                <constraint firstItem="wm1-N6-9GU" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="1" id="skh-9d-4Oe"/>
+                <constraint firstAttribute="trailing" secondItem="wm1-N6-9GU" secondAttribute="trailing" constant="1" id="zVv-MT-Mpq"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <size key="customSize" width="102" height="113"/>

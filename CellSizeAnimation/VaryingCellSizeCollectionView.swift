@@ -15,7 +15,7 @@ struct VaryingCellCVContants {
     
     //Patch Constants
     static let screenMiddlePointPatch: CGFloat = -68
-    static let wapperScrollViewContentWidthPatch: CGFloat = 80
+    static let wapperScrollViewContentWidthPatch: CGFloat = 0
     
     static let minimumScaleValue: CGFloat = 0.7
 }
@@ -57,6 +57,7 @@ class VaryingCellSizeCollectionView: UICollectionView {
         let contentWidth: CGFloat = cellWidth*CGFloat((self.numberOfItems(inSection: 0))) + VaryingCellCVContants.wapperScrollViewContentWidthPatch
         wrapperScrollView.contentSize = CGSize(width: contentWidth, height: contentHeight)
         wrapperScrollView.delegate = self
+//        wrapperScrollView.backgroundColor = .black
     }
 }
 extension VaryingCellSizeCollectionView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -90,7 +91,6 @@ extension VaryingCellSizeCollectionView: UICollectionViewDelegate, UICollectionV
         collViewDelegate.selectedItemIndex(indexPath.row)
     }
     
-    
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         self.contentOffset = scrollView.contentOffset
         for cell in self.visibleCells {
@@ -108,7 +108,7 @@ extension VaryingCellSizeCollectionView: UICollectionViewDelegate, UICollectionV
     }
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
-            adjustContentOffSetFor3Views(scrollView)
+            //adjustContentOffSetFor3Views(scrollView)
         }
     }
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -154,9 +154,16 @@ extension VaryingCellSizeCollectionView {
         }
     }
     func adjustContentOffSetFor3Views(_ scrollView: UIScrollView) {
-        self.contentOffset = getFinalOffsetOfScrollView(currentOffset: scrollView.contentOffset)
-        scrollView.contentOffset = getFinalOffsetOfScrollView(currentOffset: scrollView.contentOffset)
-        scrollingDirection = nil
+        
+        let cellArray = self.indexPathsForVisibleItems
+        let middleCell = Int(cellArray.count/2)
+        let indexPath = cellArray[middleCell]
+        let scrollPositionX = indexPath.row * Int(UIScreen.main.bounds.width/3) + Int(UIScreen.main.bounds.width/6)
+//        self.contentOffset = getFinalOffsetOfScrollView(currentOffset: scrollView.contentOffset)
+        DispatchQueue.main.async {
+            self.wrapperScrollView.contentOffset.x = CGFloat(scrollPositionX)
+            self.scrollingDirection = nil
+        }
     }
     enum ScrollingDirection {
         case left
