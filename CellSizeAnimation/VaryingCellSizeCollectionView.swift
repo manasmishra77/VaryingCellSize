@@ -57,7 +57,7 @@ class VaryingCellSizeCollectionView: UICollectionView {
         let contentWidth: CGFloat = cellWidth*CGFloat((self.numberOfItems(inSection: 0))) + VaryingCellCVContants.wapperScrollViewContentWidthPatch
         wrapperScrollView.contentSize = CGSize(width: contentWidth, height: contentHeight)
         wrapperScrollView.delegate = self
-//        wrapperScrollView.backgroundColor = .black
+        wrapperScrollView.setContentOffset(CGPoint.zero, animated: false)
     }
 }
 extension VaryingCellSizeCollectionView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -153,18 +153,19 @@ extension VaryingCellSizeCollectionView {
             return newOffSet
         }
     }
+    
     func adjustContentOffSetFor3Views(_ scrollView: UIScrollView) {
-        
-        let cellArray = self.indexPathsForVisibleItems
-        let middleCell = Int(cellArray.count/2)
-        let indexPath = cellArray[middleCell]
-        let scrollPositionX = indexPath.row * Int(UIScreen.main.bounds.width/3) + Int(UIScreen.main.bounds.width/6)
-//        self.contentOffset = getFinalOffsetOfScrollView(currentOffset: scrollView.contentOffset)
-        DispatchQueue.main.async {
-            self.wrapperScrollView.contentOffset.x = CGFloat(scrollPositionX)
-            self.scrollingDirection = nil
+        var middlPoint = self.center
+        middlPoint.x += scrollView.contentOffset.x
+        guard let middleCellIndexPath = self.indexPathForItem(at: middlPoint) else {return}
+        let middleCell = self.cellForItem(at: middleCellIndexPath)
+        guard let middleCellcenter = middleCell?.center else {return}
+        let differnece = middlPoint.x - middleCellcenter.x
+        UIView.animate(withDuration: 0.3) {
+            self.wrapperScrollView.contentOffset.x = self.wrapperScrollView.contentOffset.x - differnece
         }
     }
+    
     enum ScrollingDirection {
         case left
         case right
