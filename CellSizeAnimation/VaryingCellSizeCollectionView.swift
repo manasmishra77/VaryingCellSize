@@ -25,6 +25,7 @@ protocol VaryingCellSizeCollectionViewDelgate {
     func cellForIndex(_ collectionView: VaryingCellSizeCollectionView, index: Int) -> UIView
     func itemSizeForIndex(_ collectionView: VaryingCellSizeCollectionView,  index: Int) -> CGSize
     func selectedItemIndex(_ index: Int)
+    func focusedCellIndex(_ index: Int)
 }
 
 
@@ -57,7 +58,9 @@ class VaryingCellSizeCollectionView: UICollectionView {
         let contentWidth: CGFloat = cellWidth*CGFloat((self.numberOfItems(inSection: 0))) + VaryingCellCVContants.wapperScrollViewContentWidthPatch
         wrapperScrollView.contentSize = CGSize(width: contentWidth, height: contentHeight)
         wrapperScrollView.delegate = self
-        wrapperScrollView.setContentOffset(CGPoint.zero, animated: false)
+        var newPoint = CGPoint.zero
+        newPoint.x = 1
+        wrapperScrollView.setContentOffset(newPoint, animated: false)
     }
 }
 extension VaryingCellSizeCollectionView: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
@@ -108,7 +111,7 @@ extension VaryingCellSizeCollectionView: UICollectionViewDelegate, UICollectionV
     }
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
-            //adjustContentOffSetFor3Views(scrollView)
+            adjustContentOffSetFor3Views(scrollView)
         }
     }
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -161,8 +164,10 @@ extension VaryingCellSizeCollectionView {
         let middleCell = self.cellForItem(at: middleCellIndexPath)
         guard let middleCellcenter = middleCell?.center else {return}
         let differnece = middlPoint.x - middleCellcenter.x
-        UIView.animate(withDuration: 0.3) {
+        UIView.animate(withDuration: 0.2, animations: {
             self.wrapperScrollView.contentOffset.x = self.wrapperScrollView.contentOffset.x - differnece
+        }) { (_) in
+            self.collViewDelegate.focusedCellIndex(middleCellIndexPath.row)
         }
     }
     

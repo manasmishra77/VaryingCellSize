@@ -18,6 +18,10 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: VaryingCellSizeCollectionViewDelgate {
+    func focusedCellIndex(_ index: Int) {
+        print(index)
+    }
+    
     func numberOfItemFor(collectionView: VaryingCellSizeCollectionView) -> Int {
         return 10
     }
